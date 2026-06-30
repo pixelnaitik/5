@@ -414,12 +414,12 @@ export default function ReportsPage() {
     let customMarginLeft = 8;
     let customMarginRight = 15;
     let reportTitleFontSize = 20;
-    let patientInfoFontSize = 9.2;
-    let patientLineHeight = 5.0;
+    let patientInfoFontSize = 12;
+    let patientLineHeight = 6.0;
     let reportSectionGap = 5;
-    let tableTitleFontSize = 10;
-    let tableHeaderFontSize = 8.5;
-    let tableBodyFontSize = 10;
+    let tableTitleFontSize = 12;
+    let tableHeaderFontSize = 12;
+    let tableBodyFontSize = 12;
     let tableCellPadding = 1.2;
     let notesFontSize = 9;
     let footerFontSize = 10;
@@ -447,7 +447,7 @@ export default function ReportsPage() {
              if (s.shareMarginLeft !== undefined) customMarginLeft = s.shareMarginLeft;
              if (s.shareMarginRight !== undefined) customMarginRight = s.shareMarginRight;
              
-             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 10;
+             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 12;
              tableBodyFontSize = shareBodyFont;
           } else {
              template = s.reportTemplate || 'blank';
@@ -456,7 +456,7 @@ export default function ReportsPage() {
              if (s.reportMarginLeft !== undefined) customMarginLeft = s.reportMarginLeft;
              if (s.reportMarginRight !== undefined) customMarginRight = s.reportMarginRight;
              
-             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 10;
+             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 12;
              tableBodyFontSize = reportBodyFont;
           }
 

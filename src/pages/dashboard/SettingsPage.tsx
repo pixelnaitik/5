@@ -33,15 +33,15 @@ export default function SettingsPage() {
     shareMarginBottom: 20,
     shareMarginLeft: 15,
     shareMarginRight: 15,
-    reportTableBodyFontSize: 10,
-    shareTableBodyFontSize: 10,
+    reportTableBodyFontSize: 12,
+    shareTableBodyFontSize: 12,
     reportTitleFontSize: 22,
-    patientInfoFontSize: 10,
-    patientLineHeight: 5.5,
+    patientInfoFontSize: 12,
+    patientLineHeight: 6.0,
     reportSectionGap: 6,
-    tableTitleFontSize: 11,
-    tableHeaderFontSize: 9,
-    tableBodyFontSize: 10,
+    tableTitleFontSize: 12,
+    tableHeaderFontSize: 12,
+    tableBodyFontSize: 12,
     tableCellPadding: 1.4,
     notesFontSize: 9,
     footerFontSize: 10,
@@ -104,7 +104,7 @@ export default function SettingsPage() {
            if (parsed.reportMarginBottom === 10) parsed.reportMarginBottom = 20;
            if (parsed.reportMarginLeft === 15) parsed.reportMarginLeft = 8;
            
-           const bodyFont = parsed.tableBodyFontSize ?? 10;
+           const bodyFont = parsed.tableBodyFontSize ?? 12;
            
            setFormData(prev => ({ 
               ...prev, 
@@ -790,19 +790,19 @@ export default function SettingsPage() {
                       onClick={() => setFormData({
                         ...formData,
                         reportTitleFontSize: 22,
-                        patientInfoFontSize: 10,
-                        patientLineHeight: 5.5,
+                        patientInfoFontSize: 12,
+                        patientLineHeight: 6.0,
                         reportSectionGap: 6,
-                        tableTitleFontSize: 11,
-                        tableHeaderFontSize: 9,
-                        tableBodyFontSize: 10,
+                        tableTitleFontSize: 12,
+                        tableHeaderFontSize: 12,
+                        tableBodyFontSize: 12,
                         tableCellPadding: 1.4,
                         notesFontSize: 9,
                         footerFontSize: 10,
                         reportQrCodeSize: 15,
                         qrLabelFontSize: 7,
-                        reportTableBodyFontSize: 10,
-                        shareTableBodyFontSize: 10,
+                        reportTableBodyFontSize: 12,
+                        shareTableBodyFontSize: 12,
                         reportMarginTop: 50,
                         reportMarginBottom: 20,
                         reportMarginLeft: 8,
