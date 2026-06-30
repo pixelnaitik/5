@@ -1,8 +1,9 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
+import NProgress from 'nprogress';
 
 import { auth } from './lib/firebase';
 
@@ -17,6 +18,32 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'));
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'));
 const VerificationPage = lazy(() => import('./pages/VerificationPage'));
 const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage'));
+
+// Wrapper that shows NProgress bar while a lazy chunk is loading
+function ProgressSuspense({ children, fullScreen = false }: { children: React.ReactNode; fullScreen?: boolean }) {
+  return (
+    <Suspense
+      fallback={
+        <LazyFallback fullScreen={fullScreen} />
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
+
+function LazyFallback({ fullScreen }: { fullScreen: boolean }) {
+  useEffect(() => {
+    NProgress.start();
+    return () => { NProgress.done(); };
+  }, []);
+
+  return (
+    <div className={`${fullScreen ? 'h-screen' : 'h-[50vh]'} flex items-center justify-center bg-surface-container-low`}>
+      <Loader2 className="w-8 h-8 animate-spin text-primary-container" />
+    </div>
+  );
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, role, logout } = useAuth();
@@ -63,31 +90,33 @@ function DashboardShell() {
 
   return (
     <DashboardLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-      <Suspense fallback={
-        <div className="h-[50vh] flex items-center justify-center bg-transparent">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-container" />
-        </div>
-      }>
+      <ProgressSuspense>
         {activeTab === 'dashboard' && <OverviewPage setActiveTab={setActiveTab} />}
         {activeTab === 'patients' && <PatientsPage />}
         {activeTab === 'doctors' && <DoctorsPage />}
         {activeTab === 'reports' && <ReportsPage />}
         {activeTab === 'analytics' && <AnalyticsPage />}
         {activeTab === 'settings' && <SettingsPage />}
-      </Suspense>
+      </ProgressSuspense>
     </DashboardLayout>
   );
 }
 
-export default function App() {
+interface AppProps {
+  onReady?: () => void;
+}
+
+export default function App({ onReady }: AppProps) {
+  useEffect(() => {
+    // Signal that React has fully mounted — remove the HTML splash screen
+    NProgress.done();
+    onReady?.();
+  }, [onReady]);
+
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Suspense fallback={
-          <div className="h-screen flex items-center justify-center bg-surface-container-low">
-            <Loader2 className="w-10 h-10 animate-spin text-primary-container" />
-          </div>
-        }>
+        <ProgressSuspense fullScreen>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/technology" element={<TechnologyPage />} />
@@ -103,7 +132,7 @@ export default function App() {
               } 
             />
           </Routes>
-        </Suspense>
+        </ProgressSuspense>
       </BrowserRouter>
     </AuthProvider>
   );

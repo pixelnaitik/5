@@ -1,5 +1,14 @@
-const CACHE_NAME = 'healthcareos-cache-v1';
-const ASSETS_TO_CACHE = [
+// Healthcare OS — Service Worker v2
+// Strategy:
+//   Static assets (.js, .css, fonts, images) → Cache-First (instant after first visit)
+//   Firebase / external APIs → Network-Only (never cache live data)
+//   HTML navigation → Network-First with Cache fallback
+
+const CACHE_NAME = 'healthcareos-cache-v2';
+
+const STATIC_EXTENSIONS = ['.js', '.css', '.woff', '.woff2', '.ttf', '.png', '.jpg', '.jpeg', '.svg', '.ico', '.webp'];
+
+const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
@@ -9,69 +18,110 @@ const ASSETS_TO_CACHE = [
   '/android-chrome-192x192.png',
   '/android-chrome-512x512.png',
   '/apple-touch-icon.png',
-  '/default-share-template.png'
 ];
 
-// Install Event - Caching app shell assets
+// ─── Install ───────────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Caching App Shell');
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('[SW] Pre-caching app shell');
+        return cache.addAll(PRECACHE_ASSETS);
+      })
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate Event - Cleaning up old caches
+// ─── Activate ──────────────────────────────────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('[Service Worker] Clearing Old Cache', cache);
-            return caches.delete(cache);
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[SW] Deleting old cache:', key);
+            return caches.delete(key);
           }
         })
-      );
-    }).then(() => self.clients.claim())
+      )
+    ).then(() => self.clients.claim())
   );
 });
 
-// Fetch Event - Network-first fallback to cache strategy
+// ─── Fetch ─────────────────────────────────────────────────────────────────
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests and skip Firebase/external APIs to avoid caching problems
-  if (event.request.method !== 'GET' || event.request.url.includes('/api/') || event.request.url.includes('firestore.googleapis.com')) {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Only handle GET requests
+  if (request.method !== 'GET') return;
+
+  // ① External APIs & Firebase → Network-Only (never cache)
+  const isExternal =
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('identitytoolkit') ||
+    url.hostname.includes('securetoken');
+
+  if (isExternal) return; // browser handles it normally
+
+  // ② Static assets (.js, .css, images, fonts) → Cache-First
+  const isStaticAsset = STATIC_EXTENSIONS.some((ext) => url.pathname.endsWith(ext)) ||
+    url.pathname.startsWith('/assets/');
+
+  if (isStaticAsset) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) {
+          // Serve from cache immediately, update cache in background
+          fetch(request).then((response) => {
+            if (response && response.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, response));
+            }
+          }).catch(() => {});
+          return cached;
+        }
+        // Not in cache yet — fetch and cache it
+        return fetch(request).then((response) => {
+          if (!response || response.status !== 200 || response.type === 'opaque') return response;
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        });
+      })
+    );
     return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Check if response is valid
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+  // ③ HTML page navigation → Network-First, fallback to cache then /index.html
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
           return response;
+        })
+        .catch(() =>
+          caches.match(request).then((cached) => cached || caches.match('/index.html'))
+        )
+    );
+    return;
+  }
+
+  // ④ Everything else → Network-First with cache fallback
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
-
-        // Cache the newly fetched resource dynamic assets
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
         return response;
       })
-      .catch(() => {
-        // Fallback to cache if network fails
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // If both fail and request is for page navigation, return index.html
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
-      })
+      .catch(() => caches.match(request))
   );
 });

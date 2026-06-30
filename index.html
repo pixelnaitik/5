@@ -16,7 +16,16 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <title>PathLab OS</title>
+    <title>PathLab OS — Digital Pathology Laboratory Portal</title>
+  <meta name="description" content="PathLab OS is a clinical digital pathology laboratory management system. Manage patients, reports, doctors, and lab analytics from one secure dashboard." />
+  <meta name="keywords" content="pathology lab software, lab management system, digital pathology, patient reports, clinical lab portal" />
+  <meta property="og:title" content="PathLab OS — Digital Pathology Laboratory Portal" />
+  <meta property="og:description" content="Manage your pathology lab digitally. Patient records, test reports, doctor management, and real-time analytics in one place." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://healthcare-os.pages.dev" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PathLab OS" />
+  <meta name="twitter:description" content="Digital Pathology Laboratory Portal — patient reports, lab analytics, doctor management." />
     <script>
       (function() {
         try {
@@ -49,7 +58,31 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Native splash screen: shows instantly (0ms) while JS bundle loads. React removes it on mount. -->
+      <div id="app-splash" style="position:fixed;inset:0;z-index:9999;background:#0b3c5d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;">
+        <img src="/android-chrome-192x192.png" alt="PathLab OS" width="88" height="88" style="border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.4);" />
+        <p style="color:#ffffff;font-family:system-ui,sans-serif;font-size:22px;font-weight:700;margin:20px 0 6px;">PathLab OS</p>
+        <p style="color:#7fa7cd;font-family:system-ui,sans-serif;font-size:13px;margin:0 0 36px;">Digital Pathology Laboratory Portal</p>
+        <!-- Progress bar -->
+        <div style="width:160px;height:3px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden;">
+          <div id="splash-bar" style="height:100%;width:0%;background:#7fa7cd;border-radius:999px;transition:width 0.3s ease;"></div>
+        </div>
+        <script>
+          // Animate the splash bar while JS loads
+          (function(){
+            var bar = document.getElementById('splash-bar');
+            var w = 0;
+            var iv = setInterval(function(){
+              w += Math.random() * 15;
+              if(w > 85) w = 85;
+              bar.style.width = w + '%';
+            }, 200);
+            window.__splashInterval = iv;
+          })();
+        </script>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
