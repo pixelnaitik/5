@@ -24,10 +24,15 @@ export default function Features() {
               <p className="text-on-surface-variant max-w-md">Eliminate report tampering. Every diagnostic output contains a secure, trackable QR anchor that instantly verifies authenticity for clinicians and patients.</p>
             </div>
             <div className="mt-12 flex justify-end">
+              {/* Explicit dimensions prevent CLS; lazy loading defers below-fold network cost */}
               <img 
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
+                width="256"
+                height="256"
                 className="rounded-xl w-64 shadow-sm border border-outline-variant/20" 
-                alt="QR Scanning"
+                alt="QR code scanning for report verification"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuATSsIGTYL3F_aWTqTNbeTxT7LT76ZtEMH3uxUv3D6VpERGOCaj3oTFZRoN_V7fhQja_vSxLgzxys2FkqHmcLb-wgnqEAN1gqVL1vRYKTXp-y2r1nA-bsnm73bu4mYRSCOukyW-UvGPQ9jQh9URNjtNPLjy07fsTyARryVFK7_9V8hmG7wDhvt7JFdAYnHcVgntiQolqyNmcBxB9w_SWgwZHlKaU_JPY6Zd-V1ielpnAhITAevP3yMkEKP40_2R7EdGDV4AcwAcfp0" 
               />
             </div>
@@ -68,10 +73,15 @@ export default function Features() {
             className="md:col-span-2 bg-white p-10 rounded-4xl border border-outline-variant/30 grid md:grid-cols-2 gap-8 items-center"
           >
             <div className="order-2 md:order-1">
+              {/* Explicit dimensions prevent CLS; lazy as it is below the fold */}
               <img 
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="338"
                 className="rounded-xl shadow-lg w-full h-auto object-cover aspect-video" 
-                alt="Laboratory lab"
+                alt="Laboratory collaborative workflow interface"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBni3k52l9F4NRGjDxwpyWmNo_9KmcfUhBUQiyiNrA1SIU-xynQt4MkkzF57ZfYdc9snx_12L_P7myfGtTrFD10uG4bCMS9VMZiAOrf58u7J0j3fIisKtcMdDPy0EKisMDBnb7wwYULTrqlQ503Sf_9sG8mK5acIakpuQbmUPwjK1KDr8ocyOz7FY_oqnuIM1NEdvsYjNX3sz_LeLqQNaw00fSLbGY82npZkrbmG3js77HIxPlXgbpMD5hql-w25xGoN62048rg8OA" 
               />
             </div>

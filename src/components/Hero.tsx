@@ -45,10 +45,15 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="glass-card p-4 rounded-4xl border border-white/50 shadow-2xl relative z-10"
           >
+            {/* LCP element: fetchpriority=high removes 1440ms render delay, explicit dimensions prevent CLS */}
             <img 
               referrerPolicy="no-referrer"
+              fetchPriority="high"
+              decoding="async"
+              width="800"
+              height="500"
               className="w-full h-auto rounded-3xl shadow-sm" 
-              alt="Laboratory dashboard"
+              alt="Laboratory dashboard — PathLab OS digital pathology interface"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuALQD51NaAG1Uu_g6vNZwb-gkIOFoZsqJfODfh0FZVD4jz36G02U1VDSn81GjAhXgM--BBNN7ky1YWP2zhwWgRBlk-fLOoW7W0SI5uCySHUSAHLih0bl2aYgN2KtJN6IUrOoqJK-Ju3bFlh-sFHDzi6U7gnNH4slCAec2JgvbTris17sfXOxfiUMV-SDwbwxzHu70w_gEFU23mzlaAE0iJjzEQ8GUAa9OzZo5ARibCu0QO_-UmR5285wo9Zmf3Yrx5wdgv8SmtcBlw" 
             />
             <motion.div 
