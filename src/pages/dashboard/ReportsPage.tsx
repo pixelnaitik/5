@@ -10,6 +10,7 @@ import {
   addDoc, 
   doc, 
   getDoc,
+  getDocs,
   updateDoc,
   deleteDoc,
   where
@@ -1949,10 +1950,33 @@ export default function ReportsPage() {
                 >
                   Cancel
                 </button>
-                <button
+                 <button
                   onClick={async () => {
                     try {
-                      await deleteDoc(doc(db, 'reports', reportToDelete.id));
+                      const patientId = reportToDelete.patientId;
+                      const reportId = reportToDelete.id;
+
+                      // 1. Delete the report document
+                      await deleteDoc(doc(db, 'reports', reportId));
+
+                      // 2. Delete the associated patient document if it exists
+                      if (patientId) {
+                        await deleteDoc(doc(db, 'patients', patientId));
+                      }
+
+                      // 3. Delete any associated invoices if they exist
+                      if (patientId) {
+                        const qInvoices = query(
+                          collection(db, 'invoices'),
+                          where('patientId', '==', patientId)
+                        );
+                        const querySnapshot = await getDocs(qInvoices);
+                        const deletePromises = querySnapshot.docs.map(docSnap => 
+                          deleteDoc(doc(db, 'invoices', docSnap.id))
+                        );
+                        await Promise.all(deletePromises);
+                      }
+
                       setReportToDelete(null);
                     } catch (err) {
                       handleFirestoreError(err, OperationType.DELETE, 'reports');

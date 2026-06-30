@@ -834,11 +834,37 @@ export default function PatientsPage() {
                 >
                   Cancel
                 </button>
-                <button
+                 <button
                   onClick={async () => {
                     const path = 'patients';
                     try {
-                      await deleteDoc(doc(db, path, patientToDelete.id));
+                      const patientId = patientToDelete.id;
+
+                      // 1. Delete the patient document
+                      await deleteDoc(doc(db, path, patientId));
+
+                      // 2. Query and delete associated reports
+                      const qReports = query(
+                        collection(db, 'reports'),
+                        where('patientId', '==', patientId)
+                      );
+                      const reportsSnapshot = await getDocs(qReports);
+                      const deleteReportPromises = reportsSnapshot.docs.map(docSnap => 
+                        deleteDoc(doc(db, 'reports', docSnap.id))
+                      );
+                      await Promise.all(deleteReportPromises);
+
+                      // 3. Query and delete associated invoices
+                      const qInvoices = query(
+                        collection(db, 'invoices'),
+                        where('patientId', '==', patientId)
+                      );
+                      const invoicesSnapshot = await getDocs(qInvoices);
+                      const deleteInvoicePromises = invoicesSnapshot.docs.map(docSnap => 
+                        deleteDoc(doc(db, 'invoices', docSnap.id))
+                      );
+                      await Promise.all(deleteInvoicePromises);
+
                       setPatientToDelete(null);
                     } catch (err) {
                       handleFirestoreError(err, OperationType.DELETE, path);
