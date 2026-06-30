@@ -597,7 +597,7 @@ export default function ReportsPage() {
         } else if (template === 'classic') {
            doc.setFontSize(reportTitleFontSize + 2);
            doc.setTextColor(0, 0, 0);
-           doc.setFont('times', 'bold');
+           doc.setFont('helvetica', 'bold');
            doc.text(labName, 105, currentY + 5, { align: 'center' });
            doc.setDrawColor(0);
            doc.setLineWidth(0.5);
@@ -634,23 +634,19 @@ export default function ReportsPage() {
         }
 
         doc.setFontSize(patientInfoFontSize);
-        if (template === 'classic') doc.setFont('times', 'bold');
-        else doc.setFont('helvetica', 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.setTextColor(0);
 
         // Left column
         doc.text('Patient Name', mLeft, startY);
-        if (template === 'classic') doc.setFont('times', 'normal');
-        else doc.setFont('helvetica', 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.text(ptNameLines, mLeft + 27, startY);
         
-        if (template === 'classic') doc.setFont('times', 'bold');
-        else doc.setFont('helvetica', 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.text('Ref By', mLeft, startY + lh + nameHeightOffset);
         doc.text('Patient ID', mLeft, startY + (lh * 2) + nameHeightOffset);
         
-        if (template === 'classic') doc.setFont('times', 'normal');
-        else doc.setFont('helvetica', 'normal');
+        doc.setFont('helvetica', 'normal');
         doc.text(`: ${patient.doctorName || 'Self'}`, mLeft + 27, startY + lh + nameHeightOffset);
         doc.text(`: ${patient.id ? patient.id.substring(0, 8).toUpperCase() : 'N/A'}`, mLeft + 27, startY + (lh * 2) + nameHeightOffset);
         
@@ -661,15 +657,13 @@ export default function ReportsPage() {
           return `${d.toLocaleDateString('en-IN').replace(/\//g, '-')} ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
         };
 
-        if (template === 'classic') doc.setFont('times', 'bold');
-        else doc.setFont('helvetica', 'bold');
+        doc.setFont('helvetica', 'bold');
         
         doc.text('Age', mLeft + 97, startY);
         doc.text('Sex', mLeft + 97, startY + lh + nameHeightOffset);
         doc.text('Reported on', mLeft + 97, startY + (lh * 2) + nameHeightOffset);
         
-        if (template === 'classic') doc.setFont('times', 'normal');
-        else doc.setFont('helvetica', 'normal');
+        doc.setFont('helvetica', 'normal');
         
         doc.text(`: ${patient.age} Years`, mLeft + 120, startY);
         doc.text(`: ${patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}`, mLeft + 120, startY + lh + nameHeightOffset);
