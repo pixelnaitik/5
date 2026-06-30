@@ -7,10 +7,9 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore with multi-tab IndexedDB cache persistence
 export const db = initializeFirestore(app, {
-  databaseId: (firebaseConfig as any).firestoreDatabaseId || '(default)',
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
   })
-});
+}, (firebaseConfig as any).firestoreDatabaseId || '(default)');
 
 export const auth = getAuth(app);
