@@ -1,9 +1,17 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0b3c5d" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b3c5d" />
+
+  <!-- Resource hints: resolve Firebase DNS before it's needed, eliminating render-blocking -->
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+  <link rel="dns-prefetch" href="https://www.googleapis.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
     
     <!-- PWA Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />

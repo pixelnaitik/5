@@ -1,0 +1,44 @@
+# PathLab OS — LLM Context File
+# https://llmstxt.org
+
+# PathLab OS is a clinical digital pathology laboratory management portal.
+# It provides patient record management, laboratory test reporting, doctor management,
+# revenue analytics, and QR-verified digital reports.
+
+> PathLab OS is a secure, cloud-hosted digital pathology lab management system built for
+> clinical laboratories. It allows lab administrators, staff, and doctors to manage
+> patient records, generate verified lab reports, track revenue, and analyse lab performance.
+
+## Core Features
+
+- Patient management — add, search, and track patient records with full lab history
+- Lab report generation — create, fill, and download PDF reports for 40+ pathology tests
+- QR-verified reports — every report includes a scannable QR code for authenticity verification
+- Doctor directory — manage referring doctor profiles and contact information
+- Revenue analytics — track daily, monthly, and cumulative revenue with visual charts
+- Role-based access — admin, staff, and guest access levels with Firebase authentication
+- PWA — installable as a Progressive Web App on Android and iOS
+
+## Public Pages
+
+- [Home](https://healthcare-os.pages.dev/) — Landing page with product overview
+- [Technology](https://healthcare-os.pages.dev/technology) — Technology and security overview
+- [Solutions](https://healthcare-os.pages.dev/solutions) — Feature descriptions and use cases
+- [Verify Report](https://healthcare-os.pages.dev/verify) — Public QR code report verification page
+
+## Private Pages (authentication required)
+
+- /dashboard — Main application dashboard
+- /auth — Login and registration
+
+## Technology Stack
+
+- Frontend: React 18, TypeScript, Vite, TailwindCSS
+- Backend: Firebase Firestore (database), Firebase Auth (authentication)
+- PDF: jsPDF + html2canvas
+- Hosting: Cloudflare Pages
+
+## Optional
+
+- [robots.txt](https://healthcare-os.pages.dev/robots.txt)
+- [manifest.json](https://healthcare-os.pages.dev/manifest.json)

@@ -50,8 +50,10 @@ export default function DashboardLayout({
   setActiveTab: (tab: string) => void;
 }) {
   const { user, role, isAdmin, logout } = useAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  // Use matchMedia instead of window.innerWidth to avoid forced reflow on mount
+  const mql = window.matchMedia('(max-width: 767px)');
+  const [isMobile, setIsMobile] = useState(mql.matches);
+  const [sidebarOpen, setSidebarOpen] = useState(!mql.matches);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [avatarSeed, setAvatarSeed] = useState(user?.photoURL || 'default');
 
@@ -112,17 +114,15 @@ export default function DashboardLayout({
     }
   };
 
-  // Update layout on resize
+  // Use matchMedia change event — no forced reflow
   React.useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (!mobile) {
-        setMobileMenuOpen(false);
-      }
+    const mql = window.matchMedia('(max-width: 767px)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setMobileMenuOpen(false);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
   }, []);
 
   const handleLogout = () => logout();
@@ -134,6 +134,7 @@ export default function DashboardLayout({
         <div 
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
 
@@ -144,6 +145,7 @@ export default function DashboardLayout({
           width: isMobile ? 280 : (sidebarOpen ? 280 : 80),
           x: isMobile ? (mobileMenuOpen ? 0 : -280) : 0 
         }}
+        aria-label="Main navigation"
         className={cn(
           "bg-primary text-white flex flex-col h-full border-r border-white/10 z-50 shadow-2xl shrink-0",
           "fixed md:relative"
@@ -172,14 +174,17 @@ export default function DashboardLayout({
           )}
         </div>
 
-        <nav className="flex-1 px-3 space-y-1 mt-6 overflow-y-auto">
+        <nav className="flex-1 px-3 space-y-1 mt-6 overflow-y-auto" aria-label="Dashboard sections">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => {
                 setActiveTab(item.id);
-                if (window.innerWidth < 768) setMobileMenuOpen(false);
+                // Use matchMedia to avoid forced reflow from window.innerWidth
+                if (window.matchMedia('(max-width: 767px)').matches) setMobileMenuOpen(false);
               }}
+              aria-label={item.label}
+              aria-current={activeTab === item.id ? 'page' : undefined}
               className={cn(
                 "w-full flex items-center gap-4 p-3 rounded-xl transition-all group",
                 activeTab === item.id 
@@ -187,7 +192,7 @@ export default function DashboardLayout({
                   : "text-white/60 hover:bg-white/5 hover:text-white"
               )}
             >
-              <item.icon className={cn("w-6 h-6 shrink-0", activeTab === item.id && "text-secondary-fixed")} />
+              <item.icon className={cn("w-6 h-6 shrink-0", activeTab === item.id && "text-secondary-fixed")} aria-hidden="true" />
               {(sidebarOpen || mobileMenuOpen) && (
                 <motion.span 
                   initial={{ opacity: 0 }} 
@@ -198,7 +203,7 @@ export default function DashboardLayout({
                 </motion.span>
               )}
               {activeTab === item.id && (sidebarOpen || mobileMenuOpen) && (
-                <ChevronRight className="w-4 h-4 ml-auto text-white/40" />
+                <ChevronRight className="w-4 h-4 ml-auto text-white/40" aria-hidden="true" />
               )}
             </button>
           ))}
@@ -207,30 +212,36 @@ export default function DashboardLayout({
         <div className="p-4 border-t border-white/5 space-y-4">
           <button 
             onClick={handleLogout}
+            aria-label="Logout"
             className="w-full flex items-center gap-4 p-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white transition-all group"
           >
-            <LogOut className="w-6 h-6 shrink-0 group-hover:text-error" />
+            <LogOut className="w-6 h-6 shrink-0 group-hover:text-error" aria-hidden="true" />
             {(sidebarOpen || mobileMenuOpen) && <span className="font-medium text-sm text-left flex-1">Logout</span>}
           </button>
         </div>
 
         <button 
           onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+          aria-expanded={sidebarOpen}
           className="absolute -right-4 top-10 w-8 h-8 bg-white text-primary rounded-full shadow-lg items-center justify-center border border-outline-variant/30 hidden md:flex"
         >
-          {sidebarOpen ? <X className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          {sidebarOpen ? <X className="w-4 h-4" aria-hidden="true" /> : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
         </button>
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full relative overflow-hidden">
-        <header className="h-16 bg-white border-b border-outline-variant/30 flex items-center justify-between px-4 md:px-8 shrink-0">
+      <main role="main" className="flex-1 flex flex-col h-full relative overflow-hidden">
+        <header role="banner" className="h-16 bg-white border-b border-outline-variant/30 flex items-center justify-between px-4 md:px-8 shrink-0">
           <div className="flex items-center gap-4">
             <button 
               className="md:hidden p-2 -ml-2 text-primary"
               onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="main-nav"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6" aria-hidden="true" />
             </button>
             <BackButton 
               className="hidden md:flex !static !py-1 !px-3" 
@@ -241,6 +252,10 @@ export default function DashboardLayout({
           <div 
             className="flex items-center gap-4 cursor-pointer hover:bg-surface-container-low p-1.5 -mr-1.5 rounded-2xl transition-colors"
             onClick={() => setActiveTab('settings')}
+            role="button"
+            tabIndex={0}
+            aria-label="Open settings"
+            onKeyDown={(e) => e.key === 'Enter' && setActiveTab('settings')}
           >
             <div className="flex flex-col items-end hidden sm:flex">
               <span className="text-xs font-bold text-primary">{user?.displayName || 'Dr. Pathologist'}</span>
