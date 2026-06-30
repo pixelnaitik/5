@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, User, getRedirectResult } from 'firebase/auth';
+import { onAuthStateChanged, User, getRedirectResult, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
@@ -78,6 +78,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    // Guarantee the session is always persisted to localStorage — never dropped until logout
+    setPersistence(auth, browserLocalPersistence)
+      .catch((err) => console.error('Healthcare OS: Error setting auth persistence:', err));
+
     // Resolve redirect results elegantly if coming back from Google redirect
     getRedirectResult(auth)
       .then((result) => {
