@@ -33,15 +33,15 @@ export default function SettingsPage() {
     shareMarginBottom: 20,
     shareMarginLeft: 15,
     shareMarginRight: 15,
-    reportTableBodyFontSize: 11,
-    shareTableBodyFontSize: 11,
+    reportTableBodyFontSize: 10,
+    shareTableBodyFontSize: 10,
     reportTitleFontSize: 22,
-    patientInfoFontSize: 11,
-    patientLineHeight: 5.5,
+    patientInfoFontSize: 10,
+    patientLineHeight: 5.0,
     reportSectionGap: 6,
-    tableTitleFontSize: 11,
-    tableHeaderFontSize: 11,
-    tableBodyFontSize: 11,
+    tableTitleFontSize: 10,
+    tableHeaderFontSize: 10,
+    tableBodyFontSize: 10,
     tableCellPadding: 1.4,
     notesFontSize: 9,
     footerFontSize: 10,
@@ -104,7 +104,7 @@ export default function SettingsPage() {
            if (parsed.reportMarginBottom === 10) parsed.reportMarginBottom = 20;
            if (parsed.reportMarginLeft === 15) parsed.reportMarginLeft = 8;
            
-           const bodyFont = parsed.tableBodyFontSize ?? 11;
+           const bodyFont = parsed.tableBodyFontSize ?? 10;
            
            setFormData(prev => ({ 
               ...prev, 
@@ -712,7 +712,7 @@ export default function SettingsPage() {
                         <input 
                           type="number"
                           step="any"
-                          value={formData.shareTableBodyFontSize ?? 11}
+                          value={formData.shareTableBodyFontSize ?? 10}
                           onChange={e => setFormData({...formData, shareTableBodyFontSize: parseFloat(e.target.value) || 0})}
                           className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container outline-none"
                         />
@@ -771,7 +771,7 @@ export default function SettingsPage() {
                         <input 
                           type="number"
                           step="any"
-                          value={formData.reportTableBodyFontSize ?? 11}
+                          value={formData.reportTableBodyFontSize ?? 10}
                           onChange={e => setFormData({...formData, reportTableBodyFontSize: parseFloat(e.target.value) || 0, tableBodyFontSize: parseFloat(e.target.value) || 0})}
                           className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container outline-none"
                         />
@@ -790,19 +790,19 @@ export default function SettingsPage() {
                       onClick={() => setFormData({
                         ...formData,
                         reportTitleFontSize: 22,
-                        patientInfoFontSize: 11,
-                        patientLineHeight: 5.5,
+                        patientInfoFontSize: 10,
+                        patientLineHeight: 5.0,
                         reportSectionGap: 6,
-                        tableTitleFontSize: 11,
-                        tableHeaderFontSize: 11,
-                        tableBodyFontSize: 11,
+                        tableTitleFontSize: 10,
+                        tableHeaderFontSize: 10,
+                        tableBodyFontSize: 10,
                         tableCellPadding: 1.4,
                         notesFontSize: 9,
                         footerFontSize: 10,
                         reportQrCodeSize: 15,
                         qrLabelFontSize: 7,
-                        reportTableBodyFontSize: 11,
-                        shareTableBodyFontSize: 11,
+                        reportTableBodyFontSize: 10,
+                        shareTableBodyFontSize: 10,
                         reportMarginTop: 50,
                         reportMarginBottom: 20,
                         reportMarginLeft: 8,

@@ -414,12 +414,12 @@ export default function ReportsPage() {
     let customMarginLeft = 8;
     let customMarginRight = 15;
     let reportTitleFontSize = 20;
-    let patientInfoFontSize = 11;
-    let patientLineHeight = 5.5;
+    let patientInfoFontSize = 10;
+    let patientLineHeight = 5.0;
     let reportSectionGap = 5;
-    let tableTitleFontSize = 11;
-    let tableHeaderFontSize = 11;
-    let tableBodyFontSize = 11;
+    let tableTitleFontSize = 10;
+    let tableHeaderFontSize = 10;
+    let tableBodyFontSize = 10;
     let tableCellPadding = 1.2;
     let notesFontSize = 9;
     let footerFontSize = 10;
@@ -447,7 +447,7 @@ export default function ReportsPage() {
              if (s.shareMarginLeft !== undefined) customMarginLeft = s.shareMarginLeft;
              if (s.shareMarginRight !== undefined) customMarginRight = s.shareMarginRight;
              
-             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 11;
+             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 10;
              tableBodyFontSize = shareBodyFont;
           } else {
              template = s.reportTemplate || 'blank';
@@ -456,7 +456,7 @@ export default function ReportsPage() {
              if (s.reportMarginLeft !== undefined) customMarginLeft = s.reportMarginLeft;
              if (s.reportMarginRight !== undefined) customMarginRight = s.reportMarginRight;
              
-             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 11;
+             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 10;
              tableBodyFontSize = reportBodyFont;
           }
 
@@ -1856,7 +1856,7 @@ export default function ReportsPage() {
                       
                       return (
                       <div key={testName} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/10 pb-3 last:border-0 last:pb-0">
-                        <span className="text-[11px] font-medium text-on-surface-variant flex-1">{testName}</span>
+                        <span className="text-[10px] font-medium text-on-surface-variant flex-1">{testName}</span>
                         {(() => {
                            if (testInfo?.options) {
                              return (
@@ -1874,7 +1874,7 @@ export default function ReportsPage() {
                                      });
                                    }}
                                    onKeyDown={handleInputKeyDown}
-                                   className="test-result-input w-full sm:w-1/2 px-3 py-2 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all text-[11px] font-bold text-primary"
+                                   className="test-result-input w-full sm:w-1/2 px-3 py-2 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all text-[10px] font-bold text-primary"
                                  />
                                  <datalist id={`datalist-edit-${testName.replace(/\s+/g, '-')}`}>
                                    {testInfo.options.map(opt => <option key={opt} value={opt} />)}
