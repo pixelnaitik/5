@@ -1,0 +1,6 @@
+{
+  "name": "final deployHealthcare OS",
+  "description": "Secure, smart digital pathology laboratory management system with AI-assisted screening and verified reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

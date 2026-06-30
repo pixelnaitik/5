@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access control.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "staff"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    },
+    "Patient": {
+      "title": "Patient",
+      "description": "Patient records.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "age": { "type": "integer" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "age", "gender", "phone"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Pathology test report.",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "testType": { "type": "string" },
+        "resultData": { "type": "object" },
+        "signature": { "type": "string" },
+        "pdfUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "final"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["patientId", "testType", "resultData", "status"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Billing record.",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string" },
+        "patientId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["paid", "pending"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reportId", "patientId", "amount", "status"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents."
+    },
+    "patients/{patientId}": {
+      "schema": "Patient",
+      "description": "Patient record documents."
+    },
+    "reports/{reportId}": {
+      "schema": "Report",
+      "description": "Test report documents."
+    },
+    "invoices/{invoiceId}": {
+      "schema": "Invoice",
+      "description": "Invoice documents."
+    }
+  }
+}

@@ -1,0 +1,133 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives & Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Identity functions using DB lookup
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function userExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return isSignedIn() && userExists() && getUserData().role == 'admin';
+    }
+
+    function isStaff() {
+      return isSignedIn() && userExists() && (getUserData().role == 'staff' || getUserData().role == 'admin');
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- ENTITY VALIDATIONS ---
+
+    function isValidUser(data) {
+      return 'name' in data && 'email' in data && 'role' in data && 'createdAt' in data &&
+             (data.keys().size() == 4 || data.keys().size() == 5 || data.keys().size() == 6) &&
+             data.name is string && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.role in ['guest', 'staff', 'admin'] &&
+             (!('avatarSeed' in data) || data.avatarSeed is string) &&
+             (!('upgradeCode' in data) || data.upgradeCode is string) &&
+             data.createdAt is string; // or timestamp if we used those
+    }
+
+    function isValidPatient(data) {
+      return 'name' in data && 'age' in data && 'gender' in data && 'createdAt' in data &&
+             data.name is string && data.name.size() <= 100 &&
+             data.age is int && data.age >= 0 && data.age <= 150 &&
+             data.gender in ['male', 'female', 'other'] &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() <= 20)) &&
+             (!('doctorName' in data) || (data.doctorName is string && data.doctorName.size() <= 100)) &&
+             (!('address' in data) || (data.address is string && data.address.size() <= 500)) &&
+             (!('testSelection' in data) || data.testSelection is list) &&
+             data.createdAt is string;
+    }
+
+    function isValidDoctor(data) {
+      return 'name' in data && 'createdAt' in data &&
+             data.keys().size() == 2 &&
+             data.name is string && data.name.size() <= 100 &&
+             data.createdAt is string;
+    }
+
+    function isValidReport(data) {
+      return 'patientId' in data && 'patientName' in data && 'resultData' in data && 
+             'signature' in data && 'status' in data && 'createdAt' in data && 'createdBy' in data &&
+             isValidId(data.patientId) &&
+             data.patientName is string &&
+             (!('testType' in data) || data.testType is string) &&
+             (!('testSelection' in data) || data.testSelection is list) &&
+             data.resultData is map &&
+             data.signature is string &&
+             data.status == 'final' &&
+             data.createdAt is string &&
+             data.createdBy == request.auth.uid &&
+             (!('privateNotes' in data) || data.privateNotes is string);
+    }
+
+    function isValidInvoice(data) {
+      return 'reportId' in data && 'patientId' in data && 'patientName' in data && 
+             'amount' in data && 'status' in data && 'createdAt' in data &&
+             data.keys().size() == 6 &&
+             isValidId(data.reportId) &&
+             isValidId(data.patientId) &&
+             data.patientName is string &&
+             (data.amount is float || data.amount is int) &&
+             data.status in ['pending', 'paid'] &&
+             data.createdAt is string;
+    }
+
+    // --- COLLECTION RULES ---
+
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Patients collection
+    match /patients/{patientId} {
+      allow read, write: if true;
+    }
+
+    // Doctors collection
+    match /doctors/{doctorId} {
+      allow read, write: if true;
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      allow read, write: if true;
+    }
+
+    // Invoices collection
+    match /invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+  }
+}

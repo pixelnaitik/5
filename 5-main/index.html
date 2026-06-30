@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b3c5d" />
+    
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Dynamically adjustable favicon configuration for multiple screen sizes and devices -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>PathLab OS</title>
+    <script>
+      (function() {
+        try {
+          var s = localStorage.getItem('pathologyos_settings');
+          var themeId = 'navy';
+          if (s) {
+            var parsed = JSON.parse(s);
+            if (parsed && parsed.themeId) {
+              themeId = parsed.themeId;
+            }
+          }
+          var themes = {
+            navy: { primary: '#00263f', primaryContainer: '#0b3c5d', onPrimary: '#ffffff', onPrimaryContainer: '#7fa7cd', secondary: '#006a66', secondaryContainer: '#84f2eb', onSecondary: '#ffffff' },
+            teal: { primary: '#064e3b', primaryContainer: '#0f766e', onPrimary: '#ffffff', onPrimaryContainer: '#a7f3d0', secondary: '#0d9488', secondaryContainer: '#ccfbf1', onSecondary: '#ffffff' },
+            amethyst: { primary: '#311042', primaryContainer: '#581c87', onPrimary: '#ffffff', onPrimaryContainer: '#e9d5ff', secondary: '#7e22ce', secondaryContainer: '#f3e8ff', onSecondary: '#ffffff' },
+            slate: { primary: '#1e293b', primaryContainer: '#334155', onPrimary: '#ffffff', onPrimaryContainer: '#cbd5e1', secondary: '#475569', secondaryContainer: '#f1f5f9', onSecondary: '#ffffff' },
+            maroon: { primary: '#4c0519', primaryContainer: '#881337', onPrimary: '#ffffff', onPrimaryContainer: '#fecdd3', secondary: '#b91c1c', secondaryContainer: '#fee2e2', onSecondary: '#ffffff' }
+          };
+          var t = themes[themeId] || themes.navy;
+          var r = document.documentElement;
+          r.style.setProperty('--primary', t.primary);
+          r.style.setProperty('--primary-container', t.primaryContainer);
+          r.style.setProperty('--on-primary', t.onPrimary);
+          r.style.setProperty('--on-primary-container', t.onPrimaryContainer);
+          r.style.setProperty('--secondary', t.secondary);
+          r.style.setProperty('--secondary-container', t.secondaryContainer);
+          r.style.setProperty('--on-secondary', t.onSecondary);
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
