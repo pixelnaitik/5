@@ -51,7 +51,7 @@ export default function SettingsPage() {
     reportQrY: 1,
     reportQrX: 180,
     showQrLabel: true,
-    qrLabelSpacing: 2.0,
+    qrLabelSpacing: 3.5,
     avatarSeed: user?.photoURL || 'default',
     sharingTemplateImage: ''
   });
@@ -121,7 +121,7 @@ export default function SettingsPage() {
               reportQrX: parsed.reportQrX ?? 180,
               showQrLabel: parsed.showQrLabel ?? true,
               reportQrCodeSize: parsed.reportQrCodeSize ?? 15,
-              qrLabelSpacing: parsed.qrLabelSpacing ?? 2.0
+              qrLabelSpacing: parsed.qrLabelSpacing ?? 3.5
            }));
            if (parsed && parsed.themeId) {
               applyTheme(parsed.themeId);
@@ -811,7 +811,7 @@ export default function SettingsPage() {
                         reportQrY: 1,
                         reportQrX: 180,
                         showQrLabel: true,
-                        qrLabelSpacing: 2.0
+                        qrLabelSpacing: 3.5
                       })}
                       className="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-sm font-bold text-primary rounded-xl transition-colors"
                     >
@@ -1013,11 +1013,11 @@ export default function SettingsPage() {
                       <input 
                         type="number"
                         step="any"
-                        value={formData.qrLabelSpacing ?? 2.0}
+                        value={formData.qrLabelSpacing ?? 3.5}
                         onChange={e => setFormData({...formData, qrLabelSpacing: parseFloat(e.target.value) || 0})}
                         className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container outline-none"
                       />
-                      <p className="text-[10px] text-on-surface-variant ml-1">Gap between QR code and text in mm (default 2.0).</p>
+                      <p className="text-[10px] text-on-surface-variant ml-1">Gap between QR code and text in mm (default 3.5).</p>
                     </div>
 
                     <div className="space-y-1 flex flex-col justify-end pb-3">

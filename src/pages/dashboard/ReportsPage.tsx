@@ -38,10 +38,6 @@ import {
   Share2
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import QRCode from 'qrcode';
-import { QRCodeSVG } from 'qrcode.react';
 
 import { getPathologyTests, getReferenceRangeLabel, getReferenceRangeValues, findTestInfo, searchPathologyTests } from '../../lib/pathology-tests';
 import { generateDefaultTemplateImage } from '../../lib/default-template';
@@ -400,6 +396,9 @@ export default function ReportsPage() {
   };
 
   const patient_report = async (report: any, action: 'print' | 'download' | 'share' = 'print') => {
+    const { jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+    const QRCode = await import('qrcode');
     const patient = patients.find(p => p.id === report.patientId) || { name: report.patientName, age: 'N/A', gender: 'N/A', doctorName: 'Self', id: report.patientId || '', createdAt: report.createdAt };
     
     const formattedPatientName = patient.name.toLowerCase().replace(/\s+/g, '_');
@@ -429,7 +428,7 @@ export default function ReportsPage() {
     let reportQrY = 1;
     let reportQrX = 180;
     let showQrLabel = true;
-    let qrLabelSpacing = 2.0;
+    let qrLabelSpacing = 3.5;
     let sharingTemplateImage = '';
 
     if (savedSettings) {
@@ -616,19 +615,22 @@ export default function ReportsPage() {
         }
         
         // 2. Patient Details
-        let startY = currentY;
+        let startY = currentY + 4;
         const lh = ptLineHeight; 
         
         const ptNameLines = doc.splitTextToSize(`: ${patient.name || ''}`, totalWidth * (55 / 180));
         const nameHeightOffset = (ptNameLines.length - 1) * ptLineHeight;
         
+        const boxTop = startY - 12;
+        const boxHeight = (lh * 2) + nameHeightOffset + 15;
+
         if (template === 'modern') {
           doc.setFillColor(248, 250, 252);
           doc.setDrawColor(226, 232, 240);
-          doc.roundedRect(mLeft - 5, startY - 7, totalWidth + 10, (lh * 4) + nameHeightOffset, 2, 2, 'FD'); 
+          doc.roundedRect(mLeft - 5, boxTop, totalWidth + 10, boxHeight, 2, 2, 'FD'); 
         } else if (template === 'classic') {
           doc.setDrawColor(0);
-          doc.rect(mLeft - 5, startY - 7, totalWidth + 10, (lh * 4) + nameHeightOffset, 'S'); 
+          doc.rect(mLeft - 5, boxTop, totalWidth + 10, boxHeight, 'S'); 
         }
 
         doc.setFontSize(patientInfoFontSize);
@@ -652,7 +654,7 @@ export default function ReportsPage() {
         doc.text(`: ${patient.doctorName || 'Self'}`, mLeft + 27, startY + lh + nameHeightOffset);
         doc.text(`: ${patient.id ? patient.id.substring(0, 8).toUpperCase() : 'N/A'}`, mLeft + 27, startY + (lh * 2) + nameHeightOffset);
         
-        // Middle column (Age, Sex, Reported on)
+        // Middle column (Age, Sex, Reported on) - shifted slightly to the right
         const formatDateTime = (isoString: string) => {
           if (!isoString) return '';
           const d = new Date(isoString);
@@ -662,22 +664,23 @@ export default function ReportsPage() {
         if (template === 'classic') doc.setFont('times', 'bold');
         else doc.setFont('helvetica', 'bold');
         
-        doc.text('Age', mLeft + 92, startY);
-        doc.text('Sex', mLeft + 92, startY + lh + nameHeightOffset);
-        doc.text('Reported on', mLeft + 92, startY + (lh * 2) + nameHeightOffset);
+        doc.text('Age', mLeft + 97, startY);
+        doc.text('Sex', mLeft + 97, startY + lh + nameHeightOffset);
+        doc.text('Reported on', mLeft + 97, startY + (lh * 2) + nameHeightOffset);
         
         if (template === 'classic') doc.setFont('times', 'normal');
         else doc.setFont('helvetica', 'normal');
         
-        doc.text(`: ${patient.age} Years`, mLeft + 115, startY);
-        doc.text(`: ${patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}`, mLeft + 115, startY + lh + nameHeightOffset);
+        doc.text(`: ${patient.age} Years`, mLeft + 120, startY);
+        doc.text(`: ${patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}`, mLeft + 120, startY + lh + nameHeightOffset);
         const repDate = formatDateTime(report.createdAt);
-        doc.text(`: ${repDate}`, mLeft + 115, startY + (lh * 2) + nameHeightOffset);
+        doc.text(`: ${repDate}`, mLeft + 120, startY + (lh * 2) + nameHeightOffset);
 
-        // QR Code drawn at the side of Age, Sex, Reported on (aligned to the right)
+        // QR Code drawn at the side of Age, Sex, Reported on (aligned to the right, and vertically matching Reported on)
         if (qrDataUrl) {
-          const qrY = startY + lh + (nameHeightOffset / 2) - (reportQrCodeSize / 2);
-          const qrX = 210 - mRight - reportQrCodeSize - 5;
+          const reportedOnY = startY + (lh * 2) + nameHeightOffset;
+          const qrY = reportedOnY - reportQrCodeSize - qrLabelSpacing - 1.5;
+          const qrX = 210 - mRight - reportQrCodeSize - 3;
           doc.addImage(qrDataUrl, 'PNG', qrX, qrY, reportQrCodeSize, reportQrCodeSize);
           if (showQrLabel) {
             doc.setFontSize(qrLabelFontSize);
@@ -687,7 +690,7 @@ export default function ReportsPage() {
             } else {
               doc.setTextColor(11, 60, 93);
             }
-            doc.text('Scan to verify', qrX + reportQrCodeSize / 2, qrY + reportQrCodeSize + qrLabelSpacing, { align: 'center' });
+            doc.text('Scan to verify', qrX + reportQrCodeSize / 2, reportedOnY, { align: 'center' });
           }
         }
 
