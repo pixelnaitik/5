@@ -414,12 +414,12 @@ export default function ReportsPage() {
     let customMarginLeft = 8;
     let customMarginRight = 15;
     let reportTitleFontSize = 20;
-    let patientInfoFontSize = 12;
-    let patientLineHeight = 6.0;
+    let patientInfoFontSize = 11;
+    let patientLineHeight = 5.5;
     let reportSectionGap = 5;
-    let tableTitleFontSize = 12;
-    let tableHeaderFontSize = 12;
-    let tableBodyFontSize = 12;
+    let tableTitleFontSize = 11;
+    let tableHeaderFontSize = 11;
+    let tableBodyFontSize = 11;
     let tableCellPadding = 1.2;
     let notesFontSize = 9;
     let footerFontSize = 10;
@@ -447,7 +447,7 @@ export default function ReportsPage() {
              if (s.shareMarginLeft !== undefined) customMarginLeft = s.shareMarginLeft;
              if (s.shareMarginRight !== undefined) customMarginRight = s.shareMarginRight;
              
-             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 12;
+             const shareBodyFont = s.shareTableBodyFontSize ?? s.tableBodyFontSize ?? 11;
              tableBodyFontSize = shareBodyFont;
           } else {
              template = s.reportTemplate || 'blank';
@@ -456,7 +456,7 @@ export default function ReportsPage() {
              if (s.reportMarginLeft !== undefined) customMarginLeft = s.reportMarginLeft;
              if (s.reportMarginRight !== undefined) customMarginRight = s.reportMarginRight;
              
-             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 12;
+             const reportBodyFont = s.reportTableBodyFontSize ?? s.tableBodyFontSize ?? 11;
              tableBodyFontSize = reportBodyFont;
           }
 
@@ -1724,21 +1724,26 @@ export default function ReportsPage() {
                             </div>
                             <div className="flex items-center gap-2 mt-1 w-full min-w-0">
                               {testInfo?.options ? (
-                                <select
-                                  value={newReport.results[testName] || ''}
-                                  onChange={(e) => {
-                                    const nextResults = recalculateCBC(newReport.results, testName, e.target.value);
-                                    setNewReport({
-                                      ...newReport,
-                                      results: nextResults
-                                    });
-                                  }}
-                                  onKeyDown={handleInputKeyDown}
-                                  className="test-result-input flex-1 min-w-0 px-4 py-2.5 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all font-bold text-primary"
-                                >
-                                  <option value="" disabled>Select result...</option>
-                                  {testInfo.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                </select>
+                                <>
+                                  <input
+                                    type="text"
+                                    list={`datalist-${testName.replace(/\s+/g, '-')}`}
+                                    value={newReport.results[testName] || ''}
+                                    placeholder="Select or type result..."
+                                    onChange={(e) => {
+                                      const nextResults = recalculateCBC(newReport.results, testName, e.target.value);
+                                      setNewReport({
+                                        ...newReport,
+                                        results: nextResults
+                                      });
+                                    }}
+                                    onKeyDown={handleInputKeyDown}
+                                    className="test-result-input flex-1 min-w-0 px-4 py-2.5 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all font-bold text-primary"
+                                  />
+                                  <datalist id={`datalist-${testName.replace(/\s+/g, '-')}`}>
+                                    {testInfo.options.map(opt => <option key={opt} value={opt} />)}
+                                  </datalist>
+                                </>
                               ) : (
                                 <input
                                   type="text"
@@ -1851,25 +1856,30 @@ export default function ReportsPage() {
                       
                       return (
                       <div key={testName} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/10 pb-3 last:border-0 last:pb-0">
-                        <span className="text-sm font-medium text-on-surface-variant flex-1">{testName}</span>
+                        <span className="text-[11px] font-medium text-on-surface-variant flex-1">{testName}</span>
                         {(() => {
                            if (testInfo?.options) {
                              return (
-                               <select
-                                 value={String(value)}
-                                 onChange={(e) => {
-                                   const nextResults = recalculateCBC(selectedReport.resultData || {}, testName, e.target.value);
-                                   setSelectedReport({
-                                     ...selectedReport,
-                                     resultData: nextResults
-                                   });
-                                 }}
-                                 onKeyDown={handleInputKeyDown}
-                                 className="test-result-input w-full sm:w-1/2 px-3 py-2 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all text-sm font-bold text-primary"
-                               >
-                                 <option value="" disabled>Select result...</option>
-                                 {testInfo.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                               </select>
+                               <>
+                                 <input
+                                   type="text"
+                                   list={`datalist-edit-${testName.replace(/\s+/g, '-')}`}
+                                   value={String(value)}
+                                   placeholder="Select or type result..."
+                                   onChange={(e) => {
+                                     const nextResults = recalculateCBC(selectedReport.resultData || {}, testName, e.target.value);
+                                     setSelectedReport({
+                                       ...selectedReport,
+                                       resultData: nextResults
+                                     });
+                                   }}
+                                   onKeyDown={handleInputKeyDown}
+                                   className="test-result-input w-full sm:w-1/2 px-3 py-2 bg-white border border-outline-variant/30 rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all text-[11px] font-bold text-primary"
+                                 />
+                                 <datalist id={`datalist-edit-${testName.replace(/\s+/g, '-')}`}>
+                                   {testInfo.options.map(opt => <option key={opt} value={opt} />)}
+                                 </datalist>
+                               </>
                              );
                            }
                            return (

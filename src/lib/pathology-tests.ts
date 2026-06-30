@@ -97,12 +97,13 @@ export const DEFAULT_PATHOLOGY_TESTS: PathologyTest[] = [
     name: 'WIDAL REACTION',
     category: 'SEROLOGY',
     isGroup: true,
-    includedTests: ["S. typhi 'o'", "S. typhi 'H'", 'S. Para Typhi "A(H)"', 'S. para Typhi "B(H)"']
+    includedTests: ["S. typhi 'o'", "S. typhi 'H'", 'S. Para Typhi "A(H)"', 'S. para Typhi "B(H)"', 'Impression']
   },
   { id: 'widal_o', name: "S. typhi 'o'", category: 'SEROLOGY', unit: 'titer', options: ['Negative', '1:20', '1:40', '1:80', '1:160', '1:320'], ranges: { general: { text: 'Negative' } } },
   { id: 'widal_h', name: "S. typhi 'H'", category: 'SEROLOGY', unit: 'titer', options: ['Negative', '1:20', '1:40', '1:80', '1:160', '1:320'], ranges: { general: { text: 'Negative' } } },
   { id: 'widal_ah', name: 'S. Para Typhi "A(H)"', category: 'SEROLOGY', unit: 'titer', options: ['Negative', '1:20', '1:40', '1:80', '1:160', '1:320'], ranges: { general: { text: 'Negative' } } },
   { id: 'widal_bh', name: 'S. para Typhi "B(H)"', category: 'SEROLOGY', unit: 'titer', options: ['Negative', '1:20', '1:40', '1:80', '1:160', '1:320'], ranges: { general: { text: 'Negative' } } },
+  { id: 'widal_impression', name: 'Impression', category: 'SEROLOGY', unit: '', options: ['Negative', 'Weak positive', 'Positive'], ranges: { general: { text: '' } } },
 
   // URINE ANALYSIS
   {
