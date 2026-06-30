@@ -690,7 +690,7 @@ export default function ReportsPage() {
             } else {
               doc.setTextColor(11, 60, 93);
             }
-            doc.text('Scan to verify', qrX + reportQrCodeSize / 2, reportedOnY, { align: 'center' });
+            doc.text('Scan to Verify', qrX + reportQrCodeSize / 2, reportedOnY, { align: 'center' });
           }
         }
 
