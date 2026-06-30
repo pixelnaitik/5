@@ -673,7 +673,7 @@ export default function ReportsPage() {
         // QR Code drawn at the side of Age, Sex, Reported on (aligned to the right, and vertically matching Reported on)
         if (qrDataUrl) {
           const reportedOnY = startY + (lh * 2) + nameHeightOffset;
-          const qrY = reportedOnY - reportQrCodeSize - qrLabelSpacing - 1.5;
+          const qrY = reportedOnY - reportQrCodeSize - qrLabelSpacing;
           const qrX = 210 - mRight - reportQrCodeSize - 3;
           doc.addImage(qrDataUrl, 'PNG', qrX, qrY, reportQrCodeSize, reportQrCodeSize);
           if (showQrLabel) {
