@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   ShieldAlert,
   Activity,
-  User
+  User,
+  HelpCircle
 } from 'lucide-react';
 import { auth, db } from '../../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -38,6 +39,7 @@ const navItems: NavItem[] = [
   { id: 'reports', label: 'Reports', icon: FileText },
   { id: 'analytics', label: 'Analytics', icon: PieChart },
   { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'help', label: 'Help & FAQ', icon: HelpCircle },
 ];
 
 export default function DashboardLayout({ 

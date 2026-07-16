@@ -18,6 +18,7 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'));
 const AnalyticsPage = lazy(() => import('./pages/dashboard/AnalyticsPage'));
 const VerificationPage = lazy(() => import('./pages/VerificationPage'));
 const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage'));
+const HelpPage = lazy(() => import('./pages/dashboard/HelpPage'));
 
 // Wrapper that shows NProgress bar while a lazy chunk is loading
 function ProgressSuspense({ children, fullScreen = false }: { children: React.ReactNode; fullScreen?: boolean }) {
@@ -87,16 +88,48 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function DashboardShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [patientsTabAction, setPatientsTabAction] = useState<string | null>(null);
+  const [reportsTabAction, setReportsTabAction] = useState<string | null>(null);
+  const [createReportPatientId, setCreateReportPatientId] = useState<string | null>(null);
 
   return (
     <DashboardLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       <ProgressSuspense>
-        {activeTab === 'dashboard' && <OverviewPage setActiveTab={setActiveTab} />}
-        {activeTab === 'patients' && <PatientsPage />}
+        {activeTab === 'dashboard' && (
+          <OverviewPage 
+            setActiveTab={setActiveTab} 
+            onAddPatient={() => {
+              setPatientsTabAction('add');
+              setActiveTab('patients');
+            }}
+            onManageReport={(reportId) => {
+              setReportsTabAction(reportId);
+              setActiveTab('reports');
+            }}
+            onCreateReportForPatient={(patientId) => {
+              setCreateReportPatientId(patientId);
+              setActiveTab('reports');
+            }}
+          />
+        )}
+        {activeTab === 'patients' && (
+          <PatientsPage 
+            initialAction={patientsTabAction} 
+            clearAction={() => setPatientsTabAction(null)} 
+          />
+        )}
         {activeTab === 'doctors' && <DoctorsPage />}
-        {activeTab === 'reports' && <ReportsPage />}
+        {activeTab === 'reports' && (
+          <ReportsPage 
+            initialReportId={reportsTabAction} 
+            clearAction={() => setReportsTabAction(null)} 
+            initialCreateReportPatientId={createReportPatientId}
+            clearCreateAction={() => setCreateReportPatientId(null)}
+          />
+        )}
         {activeTab === 'analytics' && <AnalyticsPage />}
         {activeTab === 'settings' && <SettingsPage />}
+        {activeTab === 'help' && <HelpPage />}
       </ProgressSuspense>
     </DashboardLayout>
   );
@@ -118,7 +151,7 @@ export default function App({ onReady }: AppProps) {
       <BrowserRouter>
         <ProgressSuspense fullScreen>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/technology" element={<TechnologyPage />} />
             <Route path="/solutions" element={<SolutionsPage />} />
             <Route path="/auth" element={<AuthPage />} />

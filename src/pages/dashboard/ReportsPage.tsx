@@ -139,7 +139,17 @@ const isNumericTest = (testInfo: any): boolean => {
   return false;
 };
 
-export default function ReportsPage() {
+export default function ReportsPage({
+  initialReportId,
+  clearAction,
+  initialCreateReportPatientId,
+  clearCreateAction
+}: {
+  initialReportId?: string | null;
+  clearAction?: () => void;
+  initialCreateReportPatientId?: string | null;
+  clearCreateAction?: () => void;
+}) {
   const { user, role } = useAuth();
   const [reports, setReports] = useState<any[]>([]);
   const [patients, setPatients] = useState<any[]>([]);
@@ -162,6 +172,32 @@ export default function ReportsPage() {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (initialReportId && reports.length > 0) {
+      const foundReport = reports.find(r => r.id === initialReportId);
+      if (foundReport) {
+        setSelectedReport({ ...foundReport });
+        clearAction?.();
+      }
+    }
+  }, [initialReportId, reports, clearAction]);
+
+  useEffect(() => {
+    if (initialCreateReportPatientId && patients.length > 0) {
+      const foundPatient = patients.find(p => p.id === initialCreateReportPatientId);
+      if (foundPatient) {
+        setNewReport({
+          patientId: foundPatient.id,
+          testSelection: foundPatient.testSelection || [],
+          results: {}
+        });
+        setPatientSearchQuery(foundPatient.name);
+        setIsModalOpen(true);
+        clearCreateAction?.();
+      }
+    }
+  }, [initialCreateReportPatientId, patients, clearCreateAction]);
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -1524,8 +1560,7 @@ export default function ReportsPage() {
                           <div className="absolute z-50 w-full mt-1 bg-white border border-outline-variant/30 rounded-xl shadow-lg max-h-48 overflow-y-auto top-full left-0">
                             {(() => {
                                const filteredPatients = patients.filter(p => 
-                                 p.name.toLowerCase().includes(patientSearchQuery.toLowerCase()) || 
-                                 p.phone?.includes(patientSearchQuery)
+                                 p.name.toLowerCase().includes(patientSearchQuery.toLowerCase())
                                );
                                return filteredPatients.length > 0 ? (
                                  filteredPatients.map(p => (
@@ -1546,7 +1581,6 @@ export default function ReportsPage() {
                                    >
                                      <div className="flex justify-between items-center">
                                         <span className="font-bold">{p.name}</span>
-                                        <span className="text-xs text-on-surface-variant">{p.phone}</span>
                                      </div>
                                    </button>
                                  ))

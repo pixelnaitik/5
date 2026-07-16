@@ -1,6 +1,14 @@
 {
   "name": "react-example",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixelnaitik/5.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pixelnaitik/5/issues"
+  },
+  "homepage": "https://github.com/pixelnaitik/5#readme",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

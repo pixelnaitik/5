@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import BackButton from '../../components/BackButton';
 
 export default function AuthPage() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, loginAsLocalDemo } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -120,6 +120,31 @@ export default function AuthPage() {
                   <span>Continue with Google</span>
                 </>
               )}
+            </motion.button>
+
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-gray-200/50"></div>
+              <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase font-bold">Or</span>
+              <div className="flex-grow border-t border-gray-200/50"></div>
+            </div>
+
+            {/* Demo Sign-In Button */}
+            <motion.button 
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              type="button"
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                setTimeout(() => {
+                  loginAsLocalDemo();
+                  setLoading(false);
+                }, 500);
+              }}
+              disabled={loading}
+              className="flex items-center justify-center gap-3 w-full py-3.5 bg-primary text-white font-bold rounded-2xl border border-transparent shadow-md hover:bg-primary/95 transition-all text-sm cursor-pointer"
+            >
+              <span>Login as Demo Admin</span>
             </motion.button>
           </div>
 

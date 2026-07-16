@@ -54,8 +54,8 @@ Ensure you have the following installed on your machine:
 ### 1. Clone the Repository
 Clone this repository to your local machine using git:
 ```bash
-git clone https://github.com/your-username/healthcareos.git
-cd healthcareos
+git clone https://github.com/pixelnaitik/5.git
+cd 5
 ```
 
 ### 2. Install Dependencies
@@ -74,7 +74,7 @@ Since this application relies strictly on Firebase for authentication and databa
 6. Copy the `firebaseConfig` object provided by Firebase.
 
 ### 4. Configuration
-Create a file named `firebase-applet-config.json` in the root folder of your project (`healthcareos/firebase-applet-config.json`).
+Create a file named `firebase-applet-config.json` in the root folder of your project (`5/firebase-applet-config.json`).
 Structure it as follows with your unique variables obtained from the Firebase console:
 ```json
 {

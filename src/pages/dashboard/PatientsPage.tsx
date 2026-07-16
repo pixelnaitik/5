@@ -10,7 +10,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getPathologyTests, searchPathologyTests } from '../../lib/pathology-tests';
 import { DEFAULT_DOCTORS } from '../../lib/doctors';
 
-export default function PatientsPage() {
+export default function PatientsPage({ 
+  initialAction, 
+  clearAction 
+}: { 
+  initialAction?: string | null; 
+  clearAction?: () => void; 
+}) {
   const { role } = useAuth();
   const [patients, setPatients] = useState<any[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
@@ -21,6 +27,13 @@ export default function PatientsPage() {
   const [viewDate, setViewDate] = useState(() => new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<any>(null);
+
+  useEffect(() => {
+    if (initialAction === 'add') {
+      setIsModalOpen(true);
+      clearAction?.();
+    }
+  }, [initialAction, clearAction]);
   
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -182,8 +195,7 @@ export default function PatientsPage() {
   };
 
   const filteredPatients = patients.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.phone.includes(searchTerm);
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesDate = (() => {
       if (!p.createdAt) return true;
@@ -263,7 +275,7 @@ export default function PatientsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
             <input
               type="text"
-              placeholder="Search patients by name or phone..."
+              placeholder="Search patients by name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant/30 rounded-2xl focus:ring-2 focus:ring-primary-container focus:outline-none transition-all"
@@ -493,7 +505,6 @@ export default function PatientsPage() {
               <tr className="bg-surface-container-low border-b border-outline-variant/30">
                 <th className="px-6 py-4 text-xs font-black text-primary uppercase tracking-widest">Name</th>
                 <th className="px-6 py-4 text-xs font-black text-primary uppercase tracking-widest">Age / Gender</th>
-                <th className="px-6 py-4 text-xs font-black text-primary uppercase tracking-widest">Phone</th>
                 <th className="px-6 py-4 text-xs font-black text-primary uppercase tracking-widest">Registered</th>
                 <th className="px-6 py-4 text-xs font-black text-primary uppercase tracking-widest text-right">Actions</th>
               </tr>
@@ -531,9 +542,6 @@ export default function PatientsPage() {
                       <span className="px-2 py-1 bg-surface-container rounded text-xs font-medium">{patient.age}y</span>
                       <span className="capitalize text-xs text-on-surface-variant font-medium">{patient.gender}</span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-on-surface-variant">
-                    {patient.phone}
                   </td>
                   <td className="px-6 py-4 text-xs text-on-surface-variant">
                     {new Date(patient.createdAt).toLocaleDateString('en-IN')}
@@ -658,16 +666,7 @@ export default function PatientsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-black text-primary uppercase ml-1">Phone Number (Optional)</label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl focus:ring-2 focus:ring-primary-container outline-none transition-all"
-                    placeholder="+91 98765 43210"
-                  />
-                </div>
+
                 <div className="space-y-1 relative">
                   <label className="text-xs font-black text-primary uppercase ml-1">Referred By (Doctor Name)</label>
                   <div className="relative">
